@@ -222,6 +222,59 @@
             color: #dc3545;
             font-weight: 500;
             margin-bottom: 10px;
+            display: none; /* Hidden by default */
+        }
+        
+        .task-products.show {
+            display: block;
+        }
+        
+        .add-products-btn {
+            background: #dc3545;
+            color: white;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .undo-btn {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        
+        .add-to-list-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 3px 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .add-to-list-btn:hover {
+            background: #138496;
+        }
+        
+        .notes-dropdown {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
         }
         
         .task-buttons {
@@ -387,18 +440,18 @@
         <div class="content">
             <div class="input-group">
                 <label for="projectType">Project Type</label>
-                <input type="text" id="projectType" value="Pou Beach House ~ Rough-in" />
+                <input type="text" id="projectType" value="Smith Beach House ~ Rough-in" />
             </div>
             
             <div class="project-info">
                 <div class="input-group">
                     <label for="homeownerName">Homeowner Name</label>
-                    <input type="text" id="homeownerName" value="Bill & Kathy Pou" />
+                    <input type="text" id="homeownerName" value="Jack & Jill Smith" />
                 </div>
                 
                 <div class="input-group">
                     <label for="homeownerEmail">Homeowner Email</label>
-                    <input type="email" id="homeownerEmail" value="Pou123@gmail.com" />
+                    <input type="email" id="homeownerEmail" value="Smith123@gmail.com" />
                 </div>
                 
                 <div class="input-group">
@@ -413,12 +466,12 @@
                 
                 <div class="input-group">
                     <label for="superPhone">Super Phone</label>
-                    <input type="tel" id="superPhone" value="(941) 485-4600" />
+                    <input type="tel" id="superPhone" value="(941) 495-4600" />
                 </div>
                 
                 <div class="input-group">
                     <label for="siteAddress">Site Address/Lot #</label>
-                    <input type="text" id="siteAddress" value="109 Seagrape Lane, Anna Maria, FL 34216" />
+                    <input type="text" id="siteAddress" value="123 Main Lane, Anna Maria, FL 34216" />
                 </div>
             </div>
             
@@ -432,6 +485,8 @@
                         <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
                         <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Great Room TV</div>
                         <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                        <button class="add-products-btn" onclick="showProducts(this)">+ Add Products</button>
+                        <div class="task-products editable" contenteditable="true" onclick="focusElement(this)">Products: Click to edit</div>
                         <div class="task-buttons">
                             <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
                             <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
@@ -523,6 +578,55 @@
     </div>
 
     <script>
+        // Predefined notes for specific categories
+        const categoryNotes = {
+            'TV Outlets': [
+                'Need to land cable and install mud ring',
+                'Cable needs to be stubbed out with no mud ring'
+            ]
+        };
+        
+        function getCategoryName(taskItem) {
+            const category = taskItem.closest('.task-category');
+            const categoryTitle = category.querySelector('h3').textContent.trim();
+            // Extract just the category name (before any count in parentheses)
+            return categoryTitle.split('(')[0].trim();
+        }
+        
+        function createNotesDropdown(categoryName, placeholder) {
+            const notes = categoryNotes[categoryName];
+            if (!notes || notes.length === 0) {
+                return `<input type="text" placeholder="${placeholder}" />`;
+            }
+            
+            let dropdown = `<select class="notes-dropdown" onchange="selectNote(this)">
+                <option value="">${placeholder}</option>`;
+            
+            notes.forEach(note => {
+                dropdown += `<option value="${note}">${note}</option>`;
+            });
+            
+            dropdown += `</select>`;
+            return dropdown;
+        }
+        
+        function selectNote(dropdown) {
+            if (dropdown.value) {
+                // Replace dropdown with input field containing the selected note
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = dropdown.value;
+                input.style.width = '100%';
+                input.style.padding = '8px';
+                input.style.fontSize = '14px';
+                input.style.marginBottom = '8px';
+                input.style.border = '1px solid #ccc';
+                input.style.borderRadius = '3px';
+                
+                dropdown.parentNode.replaceChild(input, dropdown);
+            }
+        }
+        
         let isFinalized = false;
         
         function addTask(button) {
@@ -533,6 +637,8 @@
                 <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
                 <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
                 <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                <button class="add-products-btn" onclick="showProducts(this)">+ Add Products</button>
+                <div class="task-products editable" contenteditable="true" onclick="focusElement(this)">Products: Click to edit</div>
                 <div class="task-buttons">
                     <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
                     <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
@@ -553,6 +659,8 @@
                     <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
                     <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
                     <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                    <button class="add-products-btn" onclick="showProducts(this)">+ Add Products</button>
+                    <div class="task-products editable" contenteditable="true" onclick="focusElement(this)">Products: Click to edit</div>
                     <div class="task-buttons">
                         <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
                         <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
@@ -590,6 +698,17 @@
             statusBadge.className = 'status-badge status-completed';
             statusBadge.innerHTML = '✓ Completed';
             
+            // Add undo button separately with event listener
+            const undoBtn = document.createElement('button');
+            undoBtn.className = 'undo-btn';
+            undoBtn.innerHTML = '↶ Undo';
+            undoBtn.style.marginLeft = '8px';
+            undoBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                undoTask(this);
+            });
+            statusBadge.appendChild(undoBtn);
+            
             // Add checkmark to task text
             const taskText = taskItem.querySelector('.task-text');
             if (!taskText.innerHTML.includes('✓')) {
@@ -601,10 +720,22 @@
             const taskItem = button.closest('.task-item');
             const statusBadge = taskItem.querySelector('.status-badge');
             const taskButtons = taskItem.querySelector('.task-buttons');
+            const categoryName = getCategoryName(taskItem);
             
             taskItem.className = 'task-item partial';
             statusBadge.className = 'status-badge status-in-progress';
             statusBadge.innerHTML = 'In Progress';
+            
+            // Add undo button separately with event listener
+            const undoBtn = document.createElement('button');
+            undoBtn.className = 'undo-btn';
+            undoBtn.innerHTML = '↶ Undo';
+            undoBtn.style.marginLeft = '8px';
+            undoBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                undoTask(this);
+            });
+            statusBadge.appendChild(undoBtn);
             
             // Remove existing notes section if any
             const existingNotes = taskItem.querySelector('.notes-section');
@@ -612,14 +743,15 @@
                 existingNotes.remove();
             }
             
-            // Add notes section
+            // Add notes section with work completed/remaining fields
             const notesSection = document.createElement('div');
             notesSection.className = 'notes-section';
-            notesSection.innerHTML = `
-                <input type="text" placeholder="Work left to do: (type here)" />
-                <input type="text" placeholder="Materials used: (type here)" />
-                <input type="text" placeholder="Products used: (type here)" />
-            `;
+            
+            // Create dropdowns or input fields based on category
+            const workCompletedField = createNotesDropdown(categoryName, 'Work completed: (describe what was finished)');
+            const workRemainingField = createNotesDropdown(categoryName, 'Work remaining: (describe what still needs to be done)');
+            
+            notesSection.innerHTML = workCompletedField + workRemainingField;
             
             taskItem.insertBefore(notesSection, taskButtons);
         }
@@ -662,6 +794,63 @@
             alert(`Daily Report Generated!\n\n✅ ${completed} tasks completed\n⚡ ${partial} tasks in progress\n⏳ ${remaining} tasks remaining\n\nThis report would be automatically sent to the project manager.`);
         }
         
+        function undoTask(button) {
+            console.log('Undo button clicked!'); // Debug line
+            const taskItem = button.closest('.task-item');
+            const statusBadge = taskItem.querySelector('.status-badge');
+            const taskText = taskItem.querySelector('.task-text');
+            
+            console.log('Found task item:', taskItem); // Debug line
+            console.log('Found status badge:', statusBadge); // Debug line
+            
+            // Temporarily remove confirmation - just do the reset
+            // Remove notes section if it exists
+            const existingNotes = taskItem.querySelector('.notes-section');
+            if (existingNotes) {
+                existingNotes.remove();
+                console.log('Removed notes section'); // Debug line
+            }
+            
+            // Reset task to original state
+            taskItem.className = 'task-item';
+            statusBadge.className = 'status-badge status-not-started';
+            statusBadge.innerHTML = 'Not Started';
+            
+            console.log('Reset status badge'); // Debug line
+            
+            // Remove checkmark from task text
+            if (taskText.innerHTML.includes('<span class="checkmark">✓</span>')) {
+                taskText.innerHTML = taskText.innerHTML.replace('<span class="checkmark">✓</span>', '');
+                console.log('Removed checkmark'); // Debug line
+            }
+            
+            console.log('Undo complete!'); // Debug line
+        }
+        
+        function showProducts(button) {
+            const taskItem = button.closest('.task-item');
+            const productsField = taskItem.querySelector('.task-products');
+            const addButton = button;
+            
+            // Show the products field and hide the button
+            productsField.classList.add('show');
+            addButton.style.display = 'none';
+            
+            // Focus on the products field
+            productsField.focus();
+        }
+        
+        function hideProductsIfEmpty(productsField) {
+            const taskItem = productsField.closest('.task-item');
+            const addButton = taskItem.querySelector('.add-products-btn');
+            
+            // If products field is empty, hide it and show the add button
+            if (!productsField.textContent.trim() || productsField.textContent.trim() === 'Products: Click to edit') {
+                productsField.classList.remove('show');
+                addButton.style.display = 'inline-block';
+            }
+        }
+        
         // Auto-focus on editable elements when clicked
         function focusElement(element) {
             element.focus();
@@ -690,6 +879,13 @@
                 if (text.includes('Click to enter') || text.includes('Click to edit')) {
                     e.target.textContent = '';
                 }
+            }
+        }, true);
+        
+        // Hide products field if it becomes empty
+        document.addEventListener('blur', function(e) {
+            if (e.target.classList.contains('task-products')) {
+                hideProductsIfEmpty(e.target);
             }
         }, true);
     </script>
