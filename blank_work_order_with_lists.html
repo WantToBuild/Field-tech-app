@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order App - Create New</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        #projectType {
+            font-size: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .project-info input {
+            font-size: 14px;
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .project-info label {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .editable {
+            cursor: text;
+            padding: 8px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            color: #333 !important;
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .editable:hover {
+            background-color: #f8f9fa !important;
+        }
+        
+        .editable:focus {
+            outline: 2px solid #667eea !important;
+            background-color: #fff !important;
+            color: #333 !important;
+            border-color: #667eea !important;
+        }
+        
+        .task-category {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .task-category h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .delete-category {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+        
+        .delete-category:hover {
+            background: #c82333;
+        }
+        
+        .task-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .delete-task {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+        
+        .delete-task:hover {
+            background: #c82333;
+        }
+        
+        .task-text {
+            margin-bottom: 10px;
+            padding-right: 30px;
+            min-height: 20px;
+            color: #333 !important;
+            background: transparent !important;
+            border: 1px dashed #ccc;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .task-text:focus {
+            border-color: #667eea !important;
+            background: #fff !important;
+        }
+        
+        .task-materials {
+            color: #ff6b35;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .task-products {
+            color: #dc3545;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: none;
+        }
+        
+        .task-products.show {
+            display: block;
+        }
+        
+        .add-products-btn {
+            background: #dc3545;
+            color: white;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .add-products-btn:hover {
+            background: #c82333;
+        }
+        
+        .add-to-list-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 3px 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .add-to-list-btn:hover {
+            background: #138496;
+        }
+        
+        .saved-notification {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 5px;
+            display: none;
+        }
+        
+        .category-suggestions {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 8px;
+            margin-top: 5px;
+            display: none;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .suggestion-item {
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .suggestion-item:hover {
+            background: #e9ecef;
+        }
+        
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .add-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .add-btn:hover {
+            background: #5a6268;
+        }
+        
+        .finalize-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .finalize-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .project-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Work Order</h1>
+            <p>Create New Project</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="projectType">Project Type</label>
+                <input type="text" id="projectType" placeholder="Enter Project Type here" />
+            </div>
+            
+            <div class="project-info">
+                <div class="input-group">
+                    <label for="homeownerName">Homeowner Name</label>
+                    <input type="text" id="homeownerName" placeholder="Full Name" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="homeownerEmail">Homeowner Email</label>
+                    <input type="email" id="homeownerEmail" placeholder="Email Address" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="builderName">Builder</label>
+                    <input type="text" id="builderName" placeholder="Builder Name" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superName">Superintendent</label>
+                    <input type="text" id="superName" placeholder="Super Name" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superPhone">Super Phone</label>
+                    <input type="tel" id="superPhone" placeholder="Phone Number" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="siteAddress">Site Address/Lot #</label>
+                    <input type="text" id="siteAddress" placeholder="Address or Lot Number" />
+                </div>
+            </div>
+            
+            <div id="taskCategories">
+                <div class="empty-state">
+                    <h3>No task categories yet</h3>
+                    <p>Click "Add Task Category" below to get started</p>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="addCategory()">+ Add Task Category</button>
+            
+            <button class="finalize-btn" onclick="finalizeWorkOrder()">🔒 Finalize Work Order</button>
+        </div>
+    </div>
+
+    <script>
+        // Mock saved categories and tasks for demonstration
+        let savedCategories = [
+            'TV Outlets',
+            'WiFi Access Points', 
+            'Security',
+            'Audio Speakers',
+            'Lighting Control',
+            'Surveillance Cameras',
+            'HVAC Controls',
+            'Electrical Panels'
+        ];
+        
+        let savedTasks = [
+            'Great Room TV outlet',
+            'Master bedroom TV outlet', 
+            'Kitchen WiFi access point',
+            'Garage door sensor',
+            'In-ceiling speakers',
+            'Keypad installation',
+            'Security camera mount',
+            'Motion sensor setup'
+        ];
+        
+        let isFinalized = false;
+        
+        function showCategorySuggestions(element) {
+            // Hide any other open suggestions first
+            document.querySelectorAll('.category-suggestions').forEach(div => {
+                if (div !== element.parentElement.querySelector('.category-suggestions')) {
+                    div.style.display = 'none';
+                }
+            });
+            
+            const container = element.parentElement;
+            let suggestionsDiv = container.querySelector('.category-suggestions');
+            
+            if (!suggestionsDiv) {
+                suggestionsDiv = document.createElement('div');
+                suggestionsDiv.className = 'category-suggestions';
+                suggestionsDiv.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 5px; color: #666;">Recently Used Categories:</div>
+                `;
+                
+                savedCategories.forEach(category => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.textContent = category;
+                    item.onclick = function() {
+                        element.textContent = category;
+                        suggestionsDiv.style.display = 'none';
+                    };
+                    suggestionsDiv.appendChild(item);
+                });
+                
+                container.appendChild(suggestionsDiv);
+            }
+            
+            suggestionsDiv.style.display = suggestionsDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function showTaskSuggestions(element) {
+            // Hide any other open suggestions first
+            document.querySelectorAll('.category-suggestions').forEach(div => {
+                if (div !== element.parentElement.querySelector('.category-suggestions')) {
+                    div.style.display = 'none';
+                }
+            });
+            
+            const container = element.parentElement;
+            let suggestionsDiv = container.querySelector('.category-suggestions');
+            
+            if (!suggestionsDiv) {
+                suggestionsDiv = document.createElement('div');
+                suggestionsDiv.className = 'category-suggestions';
+                suggestionsDiv.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 5px; color: #666;">Recently Used Tasks:</div>
+                `;
+                
+                savedTasks.forEach(task => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.textContent = task;
+                    item.onclick = function() {
+                        element.textContent = task;
+                        suggestionsDiv.style.display = 'none';
+                    };
+                    suggestionsDiv.appendChild(item);
+                });
+                
+                container.appendChild(suggestionsDiv);
+            }
+            
+            suggestionsDiv.style.display = suggestionsDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function addToSavedList(element, type) {
+            const text = element.textContent.trim();
+            if (text && text !== 'Click to enter category name' && text !== 'Click to enter task description') {
+                if (type === 'category' && !savedCategories.includes(text)) {
+                    savedCategories.unshift(text);
+                    if (savedCategories.length > 10) savedCategories.pop();
+                } else if (type === 'task' && !savedTasks.includes(text)) {
+                    savedTasks.unshift(text);
+                    if (savedTasks.length > 15) savedTasks.pop();
+                }
+                
+                // Show saved notification
+                const notification = element.parentElement.querySelector('.saved-notification');
+                if (notification) {
+                    notification.style.display = 'inline-block';
+                    notification.textContent = `✓ Added to ${type} list`;
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 2000);
+                }
+            }
+        }
+        
+        function addTask(button) {
+            const category = button.parentElement;
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item';
+            taskItem.innerHTML = `
+                <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
+                <button class="add-to-list-btn" onclick="showTaskSuggestions(this.previousElementSibling)">📋 Recent</button>
+                <button class="add-to-list-btn" onclick="addToSavedList(this.previousElementSibling, 'task')">💾 Save</button>
+                <span class="saved-notification"></span>
+                <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                <button class="add-products-btn" onclick="showProducts(this)">+ Add Products</button>
+                <div class="task-products editable" contenteditable="true" onclick="focusElement(this)">Products: Click to edit</div>
+            `;
+            category.insertBefore(taskItem, button);
+        }
+        
+        function addCategory() {
+            const container = document.getElementById('taskCategories');
+            
+            // Remove empty state if it exists
+            const emptyState = container.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            const category = document.createElement('div');
+            category.className = 'task-category';
+            category.innerHTML = `
+                <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                <h3 class="editable" contenteditable="true" onclick="focusElement(this)">Click to enter category name</h3>
+                <button class="add-to-list-btn" onclick="showCategorySuggestions(this.previousElementSibling)">📋 Recent</button>
+                <button class="add-to-list-btn" onclick="addToSavedList(this.previousElementSibling, 'category')">💾 Save</button>
+                <span class="saved-notification"></span>
+                <div class="task-item">
+                    <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                    <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
+                    <button class="add-to-list-btn" onclick="showTaskSuggestions(this.previousElementSibling)">📋 Recent</button>
+                    <button class="add-to-list-btn" onclick="addToSavedList(this.previousElementSibling, 'task')">💾 Save</button>
+                    <span class="saved-notification"></span>
+                    <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                    <button class="add-products-btn" onclick="showProducts(this)">+ Add Products</button>
+                    <div class="task-products editable" contenteditable="true" onclick="focusElement(this)">Products: Click to edit</div>
+                </div>
+                <button class="add-btn" onclick="addTask(this)">+ Add another task to this category</button>
+            `;
+            container.appendChild(category);
+        }
+        
+        function deleteTask(button) {
+            if (confirm('Delete this task?')) {
+                button.parentElement.remove();
+            }
+        }
+        
+        function deleteCategory(button) {
+            if (confirm('Delete this entire category and all its tasks?')) {
+                const category = button.parentElement;
+                category.remove();
+                
+                // Show empty state if no categories left
+                const container = document.getElementById('taskCategories');
+                if (container.children.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No task categories yet</h3>
+                            <p>Click "Add Task Category" below to get started</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        function showProducts(button) {
+            const taskItem = button.closest('.task-item');
+            const productsField = taskItem.querySelector('.task-products');
+            const addButton = button;
+            
+            productsField.classList.add('show');
+            addButton.style.display = 'none';
+            productsField.focus();
+        }
+        
+        function hideProductsIfEmpty(productsField) {
+            const taskItem = productsField.closest('.task-item');
+            const addButton = taskItem.querySelector('.add-products-btn');
+            
+            if (!productsField.textContent.trim() || productsField.textContent.trim() === 'Products: Click to edit') {
+                productsField.classList.remove('show');
+                addButton.style.display = 'inline-block';
+            }
+        }
+        
+        function finalizeWorkOrder() {
+            const projectType = document.getElementById('projectType').value;
+            const homeownerName = document.getElementById('homeownerName').value;
+            const siteAddress = document.getElementById('siteAddress').value;
+            
+            if (!projectType.trim()) {
+                alert('Please enter a Project Type before finalizing.');
+                return;
+            }
+            
+            if (!homeownerName.trim()) {
+                alert('Please enter the Homeowner Name before finalizing.');
+                return;
+            }
+            
+            if (!siteAddress.trim()) {
+                alert('Please enter the Site Address or Lot Number before finalizing.');
+                return;
+            }
+            
+            const categories = document.querySelectorAll('.task-category');
+            if (categories.length === 0) {
+                alert('Please add at least one task category before finalizing.');
+                return;
+            }
+            
+            isFinalized = true;
+            const button = document.querySelector('.finalize-btn');
+            button.innerHTML = '✅ Work Order Finalized';
+            button.style.background = '#28a745';
+            
+            // Make all inputs readonly
+            document.querySelectorAll('input').forEach(input => input.readOnly = true);
+            
+            // Remove all delete buttons and list management buttons
+            const deleteButtons = document.querySelectorAll('.delete-task, .delete-category');
+            deleteButtons.forEach(btn => btn.style.display = 'none');
+            
+            const listButtons = document.querySelectorAll('.add-to-list-btn');
+            listButtons.forEach(btn => btn.style.display = 'none');
+            
+            alert('Work Order has been finalized and is ready to share with field technicians!');
+        }
+        
+        // Auto-focus on editable elements when clicked
+        function focusElement(element) {
+            element.focus();
+            if (element.textContent.includes('Click to')) {
+                element.textContent = '';
+            }
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('contenteditable') && e.target.getAttribute('contenteditable') === 'true') {
+                focusElement(e.target);
+            }
+        });
+        
+        // Clear placeholder text when editing
+        document.addEventListener('focus', function(e) {
+            if (e.target.hasAttribute('contenteditable')) {
+                const text = e.target.textContent;
+                if (text.includes('Click to enter') || text.includes('Click to edit')) {
+                    e.target.textContent = '';
+                }
+            }
+        }, true);
+        
+        // Hide products field if it becomes empty
+        document.addEventListener('blur', function(e) {
+            if (e.target.classList.contains('task-products')) {
+                hideProductsIfEmpty(e.target);
+            }
+        }, true);
+        
+        // Hide suggestions when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.category-suggestions') && !e.target.classList.contains('add-to-list-btn')) {
+                document.querySelectorAll('.category-suggestions').forEach(div => {
+                    div.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
