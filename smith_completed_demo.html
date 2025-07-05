@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order - Smith Beach House</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        #projectType {
+            font-size: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .project-info input {
+            font-size: 14px;
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .project-info label {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .task-category {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .task-category h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .task-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .task-item.completed {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .task-item.partial {
+            background: #cce7ff;
+            border-color: #99d3ff;
+        }
+        
+        .task-text {
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .task-materials {
+            color: #ff6b35;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .task-products {
+            color: #dc3545;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-not-started {
+            background: #ffeaa7;
+            color: #2d3436;
+        }
+        
+        .status-in-progress {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .status-completed {
+            background: #00b894;
+            color: white;
+        }
+        
+        .checkmark {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .finalized-banner {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .notes-section {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .notes-section input {
+            margin-bottom: 8px;
+            font-size: 14px;
+            padding: 8px;
+            background: white;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .project-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Work Order</h1>
+            <p>Field Project Management</p>
+        </div>
+        
+        <div class="finalized-banner">
+            ✅ Work Order Finalized - Ready for Field Work
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="projectType">Project Type</label>
+                <input type="text" id="projectType" value="Smith Beach House ~ Rough-in" readonly />
+            </div>
+            
+            <div class="project-info">
+                <div class="input-group">
+                    <label for="homeownerName">Homeowner Name</label>
+                    <input type="text" id="homeownerName" value="Jack & Jill Smith" readonly />
+                </div>
+                
+                <div class="input-group">
+                    <label for="homeownerEmail">Homeowner Email</label>
+                    <input type="email" id="homeownerEmail" value="Smith123@gmail.com" readonly />
+                </div>
+                
+                <div class="input-group">
+                    <label for="builderName">Builder</label>
+                    <input type="text" id="builderName" value="Better Built" readonly />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superName">Superintendent</label>
+                    <input type="text" id="superName" value="Jason Smith" readonly />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superPhone">Super Phone</label>
+                    <input type="tel" id="superPhone" value="(941) 495-4600" readonly />
+                </div>
+                
+                <div class="input-group">
+                    <label for="siteAddress">Site Address/Lot #</label>
+                    <input type="text" id="siteAddress" value="123 Main Lane, Anna Maria, FL 34216" readonly />
+                </div>
+            </div>
+            
+            <!-- TV Outlets Category -->
+            <div class="task-category">
+                <h3>TV Outlets (7)</h3>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Great Room TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Master BR TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item partial">
+                    <div class="task-text">Bonus Room TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <div class="notes-section">
+                        <input type="text" value="Work completed: Ran cable to location, ready for termination" readonly />
+                        <input type="text" value="Work remaining: Need to land cable and install mud ring" readonly />
+                    </div>
+                    <span class="status-badge status-in-progress">In Progress</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Cabana TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Bed 2 TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Bed 3 TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Den TV</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- WiFi Access Points Category -->
+            <div class="task-category">
+                <h3>WiFi Access Points (5)</h3>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Garage Entry Hall</div>
+                    <div class="task-materials">Materials: Cat6 Cable Grey, Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item completed">
+                    <div class="task-text"><span class="checkmark">✓</span>Bonus Room Hall</div>
+                    <div class="task-materials">Materials: Cat6 Cable Grey, Mudring</div>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Lanai</div>
+                    <div class="task-materials">Materials: Cat6 Cable Grey, Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Master BR Hall</div>
+                    <div class="task-materials">Materials: Cat6 Cable Grey, Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Den</div>
+                    <div class="task-materials">Materials: Cat6 Cable Grey, Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Surveillance Cameras Category -->
+            <div class="task-category">
+                <h3>Surveillance Cameras (4)</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Front Door Area</div>
+                    <div class="task-materials">Materials: Cat6 Cable White</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Driveway and Front Yard</div>
+                    <div class="task-materials">Materials: Cat6 Cable White</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Pool Area</div>
+                    <div class="task-materials">Materials: Cat6 Cable White</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Lanai Area</div>
+                    <div class="task-materials">Materials: Cat6 Cable White</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- On-Wall C4 Touchscreen Category -->
+            <div class="task-category">
+                <h3>On-Wall C4 Touchscreen</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Entry Hall/Kitchen Wall (see print for location)</div>
+                    <div class="task-materials">Materials: Cat6 Cable Green, Touchscreen Back Box</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Video Doorbell Category -->
+            <div class="task-category">
+                <h3>Video Doorbell</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Doorbell Location (see print)</div>
+                    <div class="task-materials">Materials: Cat6 Cable Green</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Feed Category -->
+            <div class="task-category">
+                <h3>Feed (From Demarc to Rack Location)</h3>
+                
+                <div class="task-item partial">
+                    <div class="task-text">Demarc</div>
+                    <div class="task-materials">Materials: Cat6 Cable Black, 1.25" Flex Conduit, 2" PVC Conduit, 2" LB, 2" Conduit Straps (x2), 4x4 Jbox</div>
+                    <div class="notes-section">
+                        <input type="text" value="Work completed: Installed 2 inch PVC conduit, LB, and straps. Pulled flex conduit" readonly />
+                        <input type="text" value="Work remaining: Install 4x4 junction box and terminate Cat6 cable" readonly />
+                    </div>
+                    <span class="status-badge status-in-progress">In Progress</span>
+                </div>
+            </div>
+            
+            <!-- Audio In-Ceiling Speakers Category -->
+            <div class="task-category">
+                <h3>Audio In-Ceiling Speakers (4 pairs)</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Bonus Room (see print for locations)</div>
+                    <div class="task-materials">Materials: 16/4 Speaker Cable, Klipsch DS-180 Speaker Brackets (x2)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Kitchen (see print for locations)</div>
+                    <div class="task-materials">Materials: 16/4 Speaker Cable, Klipsch DS-180 Speaker Brackets (x2)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Great Room (see print for locations)</div>
+                    <div class="task-materials">Materials: 16/4 Speaker Cable, Klipsch DS-180 Speaker Brackets (x2)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Lanai (see print for locations)</div>
+                    <div class="task-materials">Materials: 16/4 Speaker Cable, Klipsch DS-180 Speaker Brackets (x2)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Lighting Control Category -->
+            <div class="task-category">
+                <h3>Lighting Control (25 Keypad Locations)</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">See Print for Keypad Locations and Loops</div>
+                    <div class="task-materials">Materials: 18/4 Cresnet Cable, Mudrings (x25)</div>
+                    <div class="task-products">Products: C4-DIN-5PAN Panels (x2), C4-DIN-TB-8REL (x2), C4-DIN-8DIM (x7) (in AV Closet)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Motorized Shades Category -->
+            <div class="task-category">
+                <h3>Motorized Shades (14 Locations)</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">See Print for Locations</div>
+                    <div class="task-materials">Materials: 18/4 Cresnet Cable</div>
+                    <div class="task-products">Products: Lutron QSPS-10PNL Panel (in AV Closet)</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Security Category -->
+            <div class="task-category">
+                <h3>Security</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Garage Entry Hall</div>
+                    <div class="task-materials">Materials: 18/2 Cable, Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Master BR</div>
+                    <div class="task-materials">Materials: 18/2 Cable, Mudring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- AV Closet Category -->
+            <div class="task-category">
+                <h3>AV Closet</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Panels: Install Lighting Panels and Shade Panel at Marked Locations</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Rack Cables: Run all Cat6 Cables, 16/4 Speaker Cables, and 16/2 Cables to a double-gang Mudring at 48" High</div>
+                    <div class="task-materials">Materials: Cat6 Cable Blue (x6), Double-gang Mud Ring, Mud Ring</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Lighting Cables: Run all 18/4 Lighting Keypad Cables to a single-gang mudring at 54" high</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Shade Cables: Run all 18/4 Shade Cables to the Lutron Panel</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Lighting Panel Network Cables: Run Cat6 Cables to Rack from Lighting Panels</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+            
+            <!-- Additional Tasks Category -->
+            <div class="task-category">
+                <h3>Additional Tasks</h3>
+                
+                <div class="task-item">
+                    <div class="task-text">Lighting Panels: Install Terminal Blocks, Tape Load Schedule Inside Panels, Label Panel Cover and screws and Return to the Warehouse for staging</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-text">Photos: Take photos of all locations and load them into the Drive</div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
