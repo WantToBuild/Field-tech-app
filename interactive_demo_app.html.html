@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order App - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .demo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        #projectType {
+            font-size: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .project-info input {
+            font-size: 14px;
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .project-info label {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .editable {
+            cursor: text;
+            padding: 8px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            color: #333 !important;
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .editable:hover {
+            background-color: #f8f9fa !important;
+        }
+        
+        .editable:focus {
+            outline: 2px solid #667eea !important;
+            background-color: #fff !important;
+            color: #333 !important;
+            border-color: #667eea !important;
+        }
+        
+        .task-category {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .task-category h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .delete-category {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+        
+        .delete-category:hover {
+            background: #c82333;
+        }
+        
+        .task-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .task-item.completed {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .task-item.partial {
+            background: #cce7ff;
+            border-color: #99d3ff;
+        }
+        
+        .delete-task {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+        
+        .delete-task:hover {
+            background: #c82333;
+        }
+        
+        .task-text {
+            margin-bottom: 10px;
+            padding-right: 30px;
+            min-height: 20px;
+            color: #333 !important;
+            background: transparent !important;
+            border: 1px dashed #ccc;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .task-text:focus {
+            border-color: #667eea !important;
+            background: #fff !important;
+        }
+        
+        .task-materials {
+            color: #ff6b35;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .task-products {
+            color: #dc3545;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .task-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-complete {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-partial {
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .btn-undo {
+            background: #6c757d;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .notes-section {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .notes-section input {
+            margin-bottom: 8px;
+            font-size: 14px;
+            padding: 8px;
+        }
+        
+        .completed-notes {
+            margin-top: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            color: #495057;
+            border-left: 3px solid #28a745;
+        }
+        
+        .in-progress-notes {
+            margin-top: 10px;
+            padding: 8px;
+            background: #cce7ff;
+            border-radius: 5px;
+            color: #dc3545;
+            font-weight: 500;
+            border-left: 3px solid #007bff;
+        }
+        
+        .add-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .add-btn:hover {
+            background: #5a6268;
+        }
+        
+        .finalize-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .finalize-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .generate-report-btn {
+            background: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .generate-report-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-not-started {
+            background: #ffeaa7;
+            color: #2d3436;
+        }
+        
+        .status-in-progress {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .status-completed {
+            background: #00b894;
+            color: white;
+        }
+        
+        .checkmark {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .project-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .task-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        🔧 INTERACTIVE DEMO - Try clicking Complete/Partially Complete buttons below!
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📋 Work Order</h1>
+            <p>Field Project Management</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="projectType">Project Type</label>
+                <input type="text" id="projectType" value="Pou Beach House ~ Rough-in" />
+            </div>
+            
+            <div class="project-info">
+                <div class="input-group">
+                    <label for="homeownerName">Homeowner Name</label>
+                    <input type="text" id="homeownerName" value="Bill & Kathy Pou" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="homeownerEmail">Homeowner Email</label>
+                    <input type="email" id="homeownerEmail" value="Pou123@gmail.com" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="builderName">Builder</label>
+                    <input type="text" id="builderName" value="Ross Built" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superName">Superintendent</label>
+                    <input type="text" id="superName" value="Jason Smith" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="superPhone">Super Phone</label>
+                    <input type="tel" id="superPhone" value="(941) 485-4600" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="siteAddress">Site Address/Lot #</label>
+                    <input type="text" id="siteAddress" value="109 Seagrape Lane, Anna Maria, FL 34216" />
+                </div>
+            </div>
+            
+            <div id="taskCategories">
+                <!-- TV Outlets Category -->
+                <div class="task-category">
+                    <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                    <h3 class="editable" contenteditable="true" onclick="focusElement(this)">TV Outlets (7)</h3>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Great Room TV</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Master BR TV</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Bonus Room TV</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Blue (x2), Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <button class="add-btn" onclick="addTask(this)">+ Add another task to this category</button>
+                </div>
+                
+                <!-- WiFi Access Points Category -->
+                <div class="task-category">
+                    <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                    <h3 class="editable" contenteditable="true" onclick="focusElement(this)">WiFi Access Points (5)</h3>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Garage Entry Hall</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Grey, Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Bonus Room Hall</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Cat6 Cable Grey, Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <button class="add-btn" onclick="addTask(this)">+ Add another task to this category</button>
+                </div>
+                
+                <!-- Security Category -->
+                <div class="task-category">
+                    <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                    <h3 class="editable" contenteditable="true" onclick="focusElement(this)">Security</h3>
+                    
+                    <div class="task-item">
+                        <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                        <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Garage Entry Hall</div>
+                        <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: 18/2 Cable, Mudring</div>
+                        <div class="task-buttons">
+                            <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                            <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                        </div>
+                        <span class="status-badge status-not-started">Not Started</span>
+                    </div>
+                    
+                    <button class="add-btn" onclick="addTask(this)">+ Add another task to this category</button>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="addCategory()">+ Add Task Category</button>
+            
+            <button class="finalize-btn" onclick="finalizeWorkOrder()">🔒 Finalize Work Order</button>
+            
+            <button class="generate-report-btn" onclick="generateReport()" style="display: none;">📊 Generate Daily Report</button>
+        </div>
+    </div>
+
+    <script>
+        let isFinalized = false;
+        
+        function addTask(button) {
+            const category = button.parentElement;
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item';
+            taskItem.innerHTML = `
+                <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
+                <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                <div class="task-buttons">
+                    <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                    <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                </div>
+                <span class="status-badge status-not-started">Not Started</span>
+            `;
+            category.insertBefore(taskItem, button);
+        }
+        
+        function addCategory() {
+            const container = document.getElementById('taskCategories');
+            const category = document.createElement('div');
+            category.className = 'task-category';
+            category.innerHTML = `
+                <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                <h3 class="editable" contenteditable="true" onclick="focusElement(this)">Click to enter category name</h3>
+                <div class="task-item">
+                    <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                    <div class="task-text editable" contenteditable="true" onclick="focusElement(this)">Click to enter task description</div>
+                    <div class="task-materials editable" contenteditable="true" onclick="focusElement(this)">Materials: Click to edit</div>
+                    <div class="task-buttons">
+                        <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                        <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+                    </div>
+                    <span class="status-badge status-not-started">Not Started</span>
+                </div>
+                <button class="add-btn" onclick="addTask(this)">+ Add another task to this category</button>
+            `;
+            container.appendChild(category);
+        }
+        
+        function deleteTask(button) {
+            if (confirm('Delete this task?')) {
+                button.parentElement.remove();
+            }
+        }
+        
+        function deleteCategory(button) {
+            if (confirm('Delete this entire category and all its tasks?')) {
+                button.parentElement.remove();
+            }
+        }
+        
+        function markComplete(button) {
+            const taskItem = button.closest('.task-item');
+            const statusBadge = taskItem.querySelector('.status-badge');
+            const taskButtons = taskItem.querySelector('.task-buttons');
+            
+            // Remove any existing notes section
+            const existingNotes = taskItem.querySelector('.notes-section, .completed-notes, .in-progress-notes');
+            if (existingNotes) {
+                existingNotes.remove();
+            }
+            
+            taskItem.className = 'task-item completed';
+            statusBadge.className = 'status-badge status-completed';
+            statusBadge.innerHTML = '✓ Completed';
+            
+            // Add checkmark to task text
+            const taskText = taskItem.querySelector('.task-text');
+            if (!taskText.innerHTML.includes('✓')) {
+                taskText.innerHTML = '<span class="checkmark">✓</span>' + taskText.innerHTML;
+            }
+            
+            // Replace buttons with just Undo button
+            taskButtons.innerHTML = `
+                <button class="btn btn-undo" onclick="undoTask(this)">Undo</button>
+            `;
+            
+            // Add completed notes display (if any)
+            const completedNotes = document.createElement('div');
+            completedNotes.className = 'completed-notes';
+            completedNotes.innerHTML = 'Task completed successfully.';
+            taskItem.insertBefore(completedNotes, statusBadge);
+        }
+        
+        function markPartial(button) {
+            const taskItem = button.closest('.task-item');
+            const statusBadge = taskItem.querySelector('.status-badge');
+            const taskButtons = taskItem.querySelector('.task-buttons');
+            
+            taskItem.className = 'task-item partial';
+            statusBadge.className = 'status-badge status-in-progress';
+            statusBadge.innerHTML = 'In Progress';
+            
+            // Remove existing notes section if any
+            const existingNotes = taskItem.querySelector('.notes-section, .completed-notes, .in-progress-notes');
+            if (existingNotes) {
+                existingNotes.remove();
+            }
+            
+            // Add notes section for input
+            const notesSection = document.createElement('div');
+            notesSection.className = 'notes-section';
+            notesSection.innerHTML = `
+                <input type="text" placeholder="Work completed: (type here)" />
+                <input type="text" placeholder="Work remaining: (type here)" />
+            `;
+            
+            taskItem.insertBefore(notesSection, taskButtons);
+            
+            // Replace buttons with just Undo button after user completes notes
+            setTimeout(() => {
+                const inputs = notesSection.querySelectorAll('input');
+                let notesCompleted = false;
+                
+                inputs.forEach(input => {
+                    input.addEventListener('blur', function() {
+                        if (this.value.trim() && !notesCompleted) {
+                            // Convert to clean display
+                            const inProgressNotes = document.createElement('div');
+                            inProgressNotes.className = 'in-progress-notes';
+                            inProgressNotes.innerHTML = `
+                                Work completed: ${inputs[0].value || 'None specified'}<br>
+                                Work remaining: ${inputs[1].value || 'None specified'}
+                            `;
+                            
+                            // Replace notes section with display
+                            taskItem.insertBefore(inProgressNotes, taskButtons);
+                            notesSection.remove();
+                            
+                            // Replace buttons with just Undo
+                            taskButtons.innerHTML = `
+                                <button class="btn btn-undo" onclick="undoTask(this)">Undo</button>
+                            `;
+                            
+                            notesCompleted = true;
+                        }
+                    });
+                });
+            }, 100);
+        }
+        
+        function undoTask(button) {
+            const taskItem = button.closest('.task-item');
+            const statusBadge = taskItem.querySelector('.status-badge');
+            const taskButtons = taskItem.querySelector('.task-buttons');
+            const taskText = taskItem.querySelector('.task-text');
+            
+            // Remove checkmark if present
+            if (taskText.innerHTML.includes('✓')) {
+                taskText.innerHTML = taskText.innerHTML.replace('<span class="checkmark">✓</span>', '');
+            }
+            
+            // Remove any notes sections
+            const notesSection = taskItem.querySelector('.notes-section, .completed-notes, .in-progress-notes');
+            if (notesSection) {
+                notesSection.remove();
+            }
+            
+            // Reset to not started state
+            taskItem.className = 'task-item';
+            statusBadge.className = 'status-badge status-not-started';
+            statusBadge.innerHTML = 'Not Started';
+            
+            // Restore original buttons
+            taskButtons.innerHTML = `
+                <button class="btn btn-complete" onclick="markComplete(this)">✓ Complete</button>
+                <button class="btn btn-partial" onclick="markPartial(this)">Partially Complete</button>
+            `;
+        }
+        
+        function finalizeWorkOrder() {
+            if (isFinalized) {
+                alert('Work Order is already finalized!');
+                return;
+            }
+            
+            const projectType = document.getElementById('projectType').value;
+            if (!projectType.trim()) {
+                alert('Please enter a Project Type before finalizing.');
+                return;
+            }
+            
+            isFinalized = true;
+            const button = document.querySelector('.finalize-btn');
+            button.innerHTML = '✅ Work Order Finalized';
+            button.style.background = '#28a745';
+            
+            // Show the Generate Report button
+            const reportBtn = document.querySelector('.generate-report-btn');
+            reportBtn.style.display = 'block';
+            
+            // Remove all delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-task, .delete-category');
+            deleteButtons.forEach(btn => btn.style.display = 'none');
+            
+            alert('Work Order has been finalized! Field techs can now mark tasks complete and generate daily reports.');
+        }
+        
+        function generateReport() {
+            // Count task statuses
+            const completed = document.querySelectorAll('.task-item.completed').length;
+            const partial = document.querySelectorAll('.task-item.partial').length;
+            const total = document.querySelectorAll('.task-item').length;
+            const remaining = total - completed - partial;
+            
+            alert(`Daily Report Generated!\n\n✅ ${completed} tasks completed\n⚡ ${partial} tasks in progress\n⏳ ${remaining} tasks remaining\n\nThis report would be automatically sent to the project manager.`);
+        }
+        
+        // Auto-focus on editable elements when clicked
+        function focusElement(element) {
+            element.focus();
+            // Clear placeholder text if it contains "Click to"
+            if (element.textContent.includes('Click to')) {
+                element.textContent = '';
+            }
+            // Select all text for easy replacement
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('contenteditable') && e.target.getAttribute('contenteditable') === 'true') {
+                focusElement(e.target);
+            }
+        });
+        
+        // Clear placeholder text when editing
+        document.addEventListener('focus', function(e) {
+            if (e.target.hasAttribute('contenteditable')) {
+                const text = e.target.textContent;
+                if (text.includes('Click to enter') || text.includes('Click to edit')) {
+                    e.target.textContent = '';
+                }
+            }
+        }, true);
+    </script>
+</body>
+</html>
