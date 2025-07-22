@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order Builder - McKnight Technologies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        input, textarea, select {
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .team-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .team-member:hover {
+            background: #f3f4f6;
+        }
+        
+        .team-member.selected {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+        
+        .team-member input[type="checkbox"] {
+            margin: 0;
+        }
+        
+        .task-categories {
+            margin-top: 20px;
+        }
+        
+        .task-category {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: #e2e8f0;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        .category-name input {
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .category-name input:focus {
+            outline: 1px solid #3b82f6;
+            border-radius: 3px;
+            padding: 2px 4px;
+        }
+        
+        .delete-category {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-category:hover {
+            background: #dc2626;
+        }
+        
+        .task-list {
+            padding: 15px;
+        }
+        
+        .task-item {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .task-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .delete-task {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .delete-task:hover {
+            background: #dc2626;
+        }
+        
+        .task-fields {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .task-title-input {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .task-description-input {
+            font-size: 13px;
+            min-height: 60px;
+        }
+        
+        .materials-input {
+            font-size: 13px;
+            min-height: 50px;
+            border-color: #fbbf24;
+            background: #fefce8;
+        }
+        
+        .materials-input:focus {
+            border-color: #f59e0b;
+        }
+        
+        .add-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .add-task-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .add-task-btn:hover {
+            background: #4b5563;
+        }
+        
+        .add-category-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        .add-category-btn:hover {
+            background: #2563eb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-save {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+        }
+        
+        .btn-preview {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-preview:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Create Work Order</h1>
+            <p>McKnight Technologies - Project Management</p>
+        </div>
+        
+        <div class="content">
+            <!-- Project Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    🏗️ Project Information
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" placeholder="e.g., Strait Residence - Rough-in">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workOrderPhase">Work Order Phase</label>
+                        <select id="workOrderPhase">
+                            <option value="">Select Phase</option>
+                            <option value="rough-in">Rough-in</option>
+                            <option value="trim-out">Trim-out</option>
+                            <option value="install">Final Install</option>
+                            <option value="service">Service Call</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" placeholder="First & Last Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerPhone">Customer Phone</label>
+                        <input type="tel" id="customerPhone" placeholder="(XXX) XXX-XXXX">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="siteAddress">Site Address</label>
+                        <input type="text" id="siteAddress" placeholder="Street Address, City, State, ZIP">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduledDate">Scheduled Date</label>
+                        <input type="date" id="scheduledDate">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="builderName">Builder</label>
+                        <input type="text" id="builderName" placeholder="Builder Company Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="superName">Superintendent</label>
+                        <input type="text" id="superName" placeholder="Super Name & Phone">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team Assignment -->
+            <div class="form-section">
+                <div class="section-title">
+                    👥 Team Assignment
+                </div>
+                
+                <div class="team-selection">
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-mike">
+                        <label for="emp-mike">Mike Rodriguez (Lead Tech)</label>
+                    </div>
+                    
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-adam">
+                        <label for="emp-adam">Adam Manchester (Install)</label>
+                    </div>
+                    
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-trevor">
+                        <label for="emp-trevor">Trevor Williams (Install)</label>
+                    </div>
+                    
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-rolando">
+                        <label for="emp-rolando">Rolando Gomez (Lead Tech)</label>
+                    </div>
+                    
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-richard">
+                        <label for="emp-richard">Richard Bonito (Rough-in)</label>
+                    </div>
+                    
+                    <div class="team-member" onclick="toggleTeamMember(this)">
+                        <input type="checkbox" id="emp-steve">
+                        <label for="emp-steve">Steve Johnson (Trim-out)</label>
+                    </div>
+                </div>
+                
+                <div class="help-text">
+                    Select the technicians assigned to this work order
+                </div>
+            </div>
+            
+            <!-- Tasks & Categories -->
+            <div class="form-section">
+                <div class="section-title">
+                    📋 Tasks & Categories
+                </div>
+                
+                <div class="task-categories" id="taskCategories">
+                    <!-- Categories will be added dynamically -->
+                </div>
+                
+                <button class="add-category-btn" onclick="addCategory()">
+                    + Add Task Category
+                </button>
+            </div>
+            
+            <!-- Work Order Notes -->
+            <div class="form-section">
+                <div class="section-title">
+                    📝 Work Order Notes
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="workOrderNotes">General Instructions & Notes</label>
+                    <textarea id="workOrderNotes" placeholder="Add any important instructions, special considerations, or notes for the field team..."></textarea>
+                    <div class="help-text">
+                        These notes will be visible to all assigned technicians
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-save" onclick="saveWorkOrder()">
+                    💾 Save Work Order
+                </button>
+                <button class="btn btn-preview" onclick="previewWorkOrder()">
+                    👁️ Preview Field View
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let categoryCounter = 0;
+        
+        function toggleTeamMember(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                element.classList.add('selected');
+            } else {
+                element.classList.remove('selected');
+            }
+        }
+        
+        function addCategory() {
+            categoryCounter++;
+            const categoriesContainer = document.getElementById('taskCategories');
+            
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'task-category';
+            categoryDiv.innerHTML = `
+                <div class="category-header">
+                    <div class="category-name">
+                        <input type="text" placeholder="Enter category name (e.g., Network Equipment, TV Installation)" onkeyup="updateCategoryName(this)">
+                    </div>
+                    <button class="delete-category" onclick="deleteCategory(this)" title="Delete Category">×</button>
+                </div>
+                
+                <div class="task-list">
+                    <!-- Tasks will be added here -->
+                    <div class="add-buttons">
+                        <button class="add-task-btn" onclick="addTask(this)">+ Add Task</button>
+                    </div>
+                </div>
+            `;
+            
+            categoriesContainer.appendChild(categoryDiv);
+        }
+        
+        function deleteCategory(button) {
+            if (confirm('Delete this entire category and all its tasks?')) {
+                button.closest('.task-category').remove();
+            }
+        }
+        
+        function updateCategoryName(input) {
+            // This could trigger real-time updates in a real app
+        }
+        
+        function addTask(button) {
+            const taskList = button.closest('.task-list');
+            const addButtons = button.closest('.add-buttons');
+            
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-item';
+            taskDiv.innerHTML = `
+                <button class="delete-task" onclick="deleteTask(this)" title="Delete Task">×</button>
+                
+                <div class="task-fields">
+                    <input type="text" class="task-title-input" placeholder="Task title (e.g., Install switch and NVR)">
+                    
+                    <textarea class="task-description-input" placeholder="Task description - what needs to be done, where, any special instructions..."></textarea>
+                    
+                    <textarea class="materials-input" placeholder="Materials & Products needed for this task (one per line)&#10;• Product 1&#10;• Product 2&#10;• Material 1"></textarea>
+                </div>
+            `;
+            
+            taskList.insertBefore(taskDiv, addButtons);
+        }
+        
+        function deleteTask(button) {
+            if (confirm('Delete this task?')) {
+                button.closest('.task-item').remove();
+            }
+        }
+        
+        function saveWorkOrder() {
+            // Collect all form data
+            const workOrderData = {
+                projectName: document.getElementById('projectName').value,
+                phase: document.getElementById('workOrderPhase').value,
+                customer: {
+                    name: document.getElementById('customerName').value,
+                    phone: document.getElementById('customerPhone').value
+                },
+                siteAddress: document.getElementById('siteAddress').value,
+                scheduledDate: document.getElementById('scheduledDate').value,
+                builder: document.getElementById('builderName').value,
+                superintendent: document.getElementById('superName').value,
+                assignedTeam: getSelectedTeam(),
+                categories: getTaskCategories(),
+                notes: document.getElementById('workOrderNotes').value
+            };
+            
+            console.log('Work Order Data:', workOrderData);
+            alert('Work Order saved! ✅\\n\\nIn a real app, this would:\\n• Save to Firestore\\n• Generate work order ID\\n• Send notifications to assigned techs\\n• Add to project timeline');
+        }
+        
+        function previewWorkOrder() {
+            const projectName = document.getElementById('projectName').value;
+            const phase = document.getElementById('workOrderPhase').value;
+            
+            if (!projectName || !phase) {
+                alert('Please fill in Project Name and Phase before previewing');
+                return;
+            }
+            
+            alert('Field Tech Preview! 📱\\n\\nThis would show how the work order appears in the field tech PWA, similar to the Post Install interface we built.\\n\\nWould you like me to create a field tech preview for your Strait project work order?');
+        }
+        
+        function getSelectedTeam() {
+            const selectedTeam = [];
+            document.querySelectorAll('.team-member input[type="checkbox"]:checked').forEach(checkbox => {
+                const label = checkbox.nextElementSibling.textContent;
+                selectedTeam.push(label);
+            });
+            return selectedTeam;
+        }
+        
+        function getTaskCategories() {
+            const categories = [];
+            document.querySelectorAll('.task-category').forEach(categoryDiv => {
+                const categoryName = categoryDiv.querySelector('.category-name input').value;
+                const tasks = [];
+                
+                categoryDiv.querySelectorAll('.task-item').forEach(taskDiv => {
+                    const taskTitle = taskDiv.querySelector('.task-title-input').value;
+                    const taskDescription = taskDiv.querySelector('.task-description-input').value;
+                    const taskMaterials = taskDiv.querySelector('.materials-input').value;
+                    
+                    if (taskTitle.trim()) {
+                        tasks.push({
+                            title: taskTitle,
+                            description: taskDescription,
+                            materials: taskMaterials
+                        });
+                    }
+                });
+                
+                if (categoryName.trim() && tasks.length > 0) {
+                    categories.push({
+                        name: categoryName,
+                        tasks: tasks
+                    });
+                }
+            });
+            return categories;
+        }
+        
+        // Initialize with one category to get started
+        window.onload = function() {
+            addCategory();
+        }
+    </script>
+</body>
+</html>
